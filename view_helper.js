@@ -430,13 +430,12 @@ function define_file_permission_groups_list(id_prefix){
 
 // Make a selectable list which will store all of the users, and automatically keep track of which one is selected.
 all_users_selectlist = define_single_select_list('user_select_list')
-
-// Make the elements which reperesent all users, and add them to the selectable
-all_user_elements = make_user_list('user_select', all_users)
-all_users_selectlist.append(all_user_elements)
+// all_user_elements = make_user_list('user_select', all_users)
+// all_users_selectlist.append(all_user_elements)
 
 // Make the dialog:
 user_select_dialog = define_new_dialog('user_select_dialog2', 'Select User', {
+
     buttons: {
         Cancel: {
             text: "Cancel",
@@ -459,14 +458,42 @@ user_select_dialog = define_new_dialog('user_select_dialog2', 'Select User', {
         }
     }
 })
-
-// add stuff to the dialog:
-user_select_dialog.append(all_users_selectlist)
-
 // Call this function whenever you need a user select dialog; it will automatically populate the 'selected_user' attribute of the element with id to_populate_id
 function open_user_select_dialog(to_populate_id) {
-    // TODO: reset selected user?..
 
+    // TODO: reset selected user?..
+    // add stuff to the dialog:
+    if(to_populate_id === "perm_add_user_field"){
+        
+        new_users_list = {}
+        console.log(new_users_list)
+        Object.entries(all_users).forEach(function(entry){
+            let seen = false
+            let val = entry[0];
+            file_permission_users[0].childNodes.forEach(function(u){
+                if(val === u.getAttribute("name")){
+                    seen = true
+                }
+            })
+            if(!seen){
+                new_users_list[val] = val
+            }
+        })
+        console.log(new_users_list)
+
+        all_user_elements = make_user_list('user_select', new_users_list)
+        all_users_selectlist.append(all_user_elements)
+        console.log(all_users_selectlist[0])
+
+    }
+    else {
+        // Make the elements which reperesent all users, and add them to the selectable
+        all_user_elements = make_user_list('user_select', all_users)
+        all_users_selectlist.append(all_user_elements)
+    }
+    
+
+    user_select_dialog.append(all_users_selectlist)
     user_select_dialog.attr('to_populate', to_populate_id)
     user_select_dialog.dialog('open')
 }
