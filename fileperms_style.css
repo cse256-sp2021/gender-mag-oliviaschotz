@@ -5,6 +5,7 @@
 
 .section {
     margin-bottom: 5px;
+    padding: 2%;
 }
 
 .ui-selected { 
@@ -35,4 +36,24 @@
 
 .no-close .ui-dialog-titlebar-close {
     display: none;
+}
+
+.ui-selectable{
+    height:180px !important;
+}
+
+.user{
+    padding:1%;
+    margin-top:1%;
+}
+.user:hover{
+    cursor: pointer;
+}
+
+.title{
+    font-weight: bold;
+}
+
+.title span{
+    font-weight: initial;
 }

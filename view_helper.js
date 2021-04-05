@@ -32,7 +32,7 @@ function define_attribute_observer(watched_elem_selector, watched_attribute, on_
 // The element automatically creates an icon which varies based on whether it's a singular user or a group, 
 // and also adds any attributes you pass along
 function make_user_elem(id_prefix, uname, user_attributes=null) {
-    user_elem = $(`<div class="ui-widget-content" id="${id_prefix}_${uname}" name="${uname}">
+    user_elem = $(`<div class="ui-widget-content user" id="${id_prefix}_${uname}" name="${uname}">
         <span id="${id_prefix}_${uname}_icon" class="oi ${is_user(all_users[uname])?'oi-person':'oi-people'}"/> 
         <span id="${id_prefix}_${uname}_text">${uname} </span>
     </div>`)
@@ -441,6 +441,7 @@ user_select_dialog = define_new_dialog('user_select_dialog2', 'Select User', {
             text: "Cancel",
             id: "user_select_cancel_button",
             click: function() {
+                all_users_selectlist.empty()
                 $( this ).dialog( "close" );
             },
         },
@@ -453,6 +454,7 @@ user_select_dialog = define_new_dialog('user_select_dialog2', 'Select User', {
                 let to_populate_id = $(this).attr('to_populate') // which field do we need to populate?
                 let selected_value = all_users_selectlist.attr('selected_item') // what is the user name that was selected?
                 $(`#${to_populate_id}`).attr('selected_user', selected_value) // populate the element with the id
+                all_users_selectlist.empty()
                 $( this ).dialog( "close" );
             }
         }

@@ -14,6 +14,9 @@ perm_dialog = define_new_dialog('permdialog', title='Permissions', options = {
             text: "OK",
             id: "perm-dialog-ok-button",
             click: function() {
+                perm_remove_user_button.hide()
+                grouped_permissions.hide()
+                advanced_expl_div.hide()
                 $( this ).dialog( "close" );
             }
         },
@@ -21,6 +24,9 @@ perm_dialog = define_new_dialog('permdialog', title='Permissions', options = {
             text: "Advanced",
             id: "perm-dialog-advanced-button",
             click: function() {
+                perm_remove_user_button.hide()
+                grouped_permissions.hide()
+                advanced_expl_div.hide()
                 open_advanced_dialog(perm_dialog.attr('filepath'))
             }
         }
@@ -29,7 +35,7 @@ perm_dialog = define_new_dialog('permdialog', title='Permissions', options = {
 
 // Make the initial "Object Name:" text:
 // If you pass in valid HTML to $(), it will *create* elements instead of selecting them. (You still have to append them, though)
-obj_name_div = $('<div id="permdialog_objname" class="section">You are changing the permissions of this file: <span id="permdialog_objname_namespan"></span> </div>')
+obj_name_div = $('<div id="permdialog_objname" class="section title">You are changing the permissions of this file: <span id="permdialog_objname_namespan"></span> </div>')
 
 //Make the div with the explanation about special permissions/advanced settings:
 advanced_expl_div = $('<div id="permdialog_advanced_explantion_text">For special permissions or advanced settings, click Advanced.</div>')
@@ -42,6 +48,9 @@ grouped_permissions.addClass('section') // add a 'section' class to the grouped_
 file_permission_users = define_single_select_list('permdialog_file_user_list', function(selected_user, e, ui){
     // when a new user is selected, change username attribute of grouped permissions:
     grouped_permissions.attr('username', selected_user)
+    perm_remove_user_button.show()
+    grouped_permissions.show()
+    advanced_expl_div.show()
 })
 file_permission_users.css({
     'height':'80px',
@@ -119,7 +128,7 @@ let are_you_sure_dialog = define_new_dialog('are_you_sure_dialog', "Are you sure
 are_you_sure_dialog.text('Do you want to remove permissions for this user?')
 
 // Make actual "remove" button:
-perm_remove_user_button  = $('<button id="perm_remove_user" class="ui-button ui-widget ui-corner-all">Remove</button>')
+perm_remove_user_button  = $('<button id="perm_remove_user" class="ui-button ui-widget ui-corner-all">Remove User</button>')
 perm_remove_user_button.click(function(){
     // Get the current user and filename we are working with:
     let selected_username = file_permission_users.attr('selected_item')
@@ -145,13 +154,17 @@ perm_remove_user_button.click(function(){
 
 // --- Append all the elements to the permissions dialog in the right order: --- 
 perm_dialog.append(obj_name_div)
-perm_dialog.append($('<div id="permissions_user_title">Choose a user to see their permissions:</div>'))
+perm_dialog.append($('<div id="permissions_user_title" class="title">Choose a user to see their permissions:</div>'))
 perm_dialog.append(file_permission_users)
-perm_dialog.append($('<div id="permissions_new_user_title">Or add a new user to give them permissions for this file:</div>'))
+perm_dialog.append($('<div id="permissions_new_user_title" class="title">Or add a new user to give them permissions for this file:</div>'))
 perm_dialog.append(perm_add_user_select)
 perm_add_user_select.append(perm_remove_user_button) // Cheating a bit again - add the remove button the the 'add user select' div, just so it shows up on the same line.
-// perm_dialog.append(grouped_permissions)
-// perm_dialog.append(advanced_expl_div)
+perm_dialog.append(grouped_permissions)
+perm_dialog.append(advanced_expl_div)
+
+perm_remove_user_button.hide()
+grouped_permissions.hide()
+advanced_expl_div.hide()
 
 // --- Additional logic for reloading contents when needed: ---
 //Define an observer which will propagate perm_dialog's filepath attribute to all the relevant elements, whenever it changes:
@@ -182,7 +195,7 @@ function make_all_users_list(id_prefix, attr_set_id, height=80) {
     for(let username in all_users) {
         let user = all_users[username]
         all_user_list.append(
-            `<div class="ui-widget-content" id="${id_prefix}_${username}" username="${username}">
+            `<div class="ui-widget-content user" id="${id_prefix}_${username}" username="${username}">
                 <span id="${id_prefix}_${username}_icon" class="oi ${is_user(user)?'oi-person':'oi-people'}"/> 
                 ${username}
             </div>`)
@@ -319,7 +332,7 @@ $( "#advtabs" ).tabs({
 let adv_contents = $(`#advdialog`).dialog({
     position: { my: "top", at: "top", of: $('#html-loc') },
     width: 700,
-    height: 450,
+    height: 750,
     modal: true,
     autoOpen: false,
     appendTo: "#html-loc",

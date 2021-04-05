@@ -1,29 +1,31 @@
 // ---- Define your dialogs  and panels here ----
-let perm_panel = define_new_effective_permissions('perm-panel', true);
-$('#sidepanel').append(perm_panel);
+// let perm_panel = define_new_effective_permissions('perm-panel', true);
+// $('#sidepanel').append(perm_panel);
 
-$('#perm-panel').attr('filepath', "/C/presentation_documents/important_file.txt");
+// $('#perm-panel').attr('filepath', "/C/presentation_documents/important_file.txt");
 
-let user_select = define_new_user_select_field('select-panel', 'Select User', function(selected_user){
-    $('#perm-panel').attr('username', selected_user);
-});
-$('#sidepanel').append(user_select);
+// let user_select = define_new_user_select_field('select-panel', 'Select User', function(selected_user){
+//     $('#perm-panel').attr('username', selected_user);
+// });
+// $('#sidepanel').append(user_select);
 
-info_dialog = define_new_dialog('info-dialog', 'Info Dialog', {});
-$('#sidepanel').append(info_dialog);
+// info_dialog = define_new_dialog('info-dialog', 'Info Dialog', {});
+// $('#sidepanel').append(info_dialog);
 
-$('.perm_info').click(function(){
-    console.log("perm info clicked!");
-    info_dialog.dialog('open');
+// $('.perm_info').click(function(){
+//     console.log("perm info clicked!");
+//     info_dialog.dialog('open');
 
-    let filepath = $('#perm-panel').attr('filepath');
-    let current_user = $('#perm-panel').attr('username');
-    let permission = $(this).attr('permission_name');
+//     let filepath = $('#perm-panel').attr('filepath');
+//     let current_user = $('#perm-panel').attr('username');
+//     let permission = $(this).attr('permission_name');
     
-    let explanation_text = get_explanation_text(allow_user_action(path_to_file[filepath], all_users[current_user], permission, true));
+//     let explanation_text = get_explanation_text(allow_user_action(path_to_file[filepath], all_users[current_user], permission, true));
     
-    info_dialog.text(explanation_text);
-});
+//     info_dialog.text(explanation_text);
+// });
+
+// let info_panel = define_new
 
 
 
