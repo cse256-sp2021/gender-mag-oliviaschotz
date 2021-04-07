@@ -303,6 +303,30 @@ function update_effective_user() {
     
 }
 
+// Update Effective User display
+function update_inherited_user() {
+    // $('.effectivecheckcell').empty()
+    let selected_username = $('#adv_inherited_current_user').attr('selected_user')
+
+    // if a user is actually selected (and is in the user list):
+    if(selected_username && (selected_username.length > 0) && (selected_username in all_users) ) {
+        let selected_user = all_users[selected_username]
+
+        let filepath = $('#advdialog').attr('filepath')
+        let file = path_to_file[filepath]
+
+        // for each possible permission value
+        // for(let p of Object.values(permissions)) {
+        //     // if the actual model would allow an action with permission
+        //     if( allow_user_action(file, selected_user, p)) {
+        //         // find the checkbox cell and put a checkbox there.
+        //         $(document.getElementById(`adv_effective_checkcell_${p}`)).append(`<span id="adv_effective_checkbox_${p}" class="oi oi-check"/>`)
+        //     }
+        // }
+    }
+    
+}
+
 // TODO: redo everything to use the new user_select_dialog
 function open_user_select(to_populate) {
     $('#user_select_dialog').attr('to_populate', to_populate)
@@ -352,6 +376,12 @@ let adv_contents = $(`#advdialog`).dialog({
 $("#adv_effective_user_select").click(function(event){
     open_user_select("adv_effective_current_user") // Update element with id=adv_effective_current_user once user is selected.
 })
+
+$("#adv_permissions_user_select").click(function(event){
+    open_user_select("adv_inherited_current_user") // Update element with id=adv_effective_current_user once user is selected.
+})
+
+
 
 // listen for changes to inheritance checkbox:
 $('#adv_perm_inheritance').change(function(){
@@ -467,6 +497,19 @@ effective_user_observer = new MutationObserver(function(mutationsList, observer)
 })
 
 effective_user_observer.observe(document.getElementById('adv_effective_current_user'), {attributes: true})
+
+// listen for mutations on selected user name inherited user permissions:
+inherited_user_observer = new MutationObserver(function(mutationsList, observer){
+    for(let mutation of mutationsList) {
+        if(mutation.type === 'attributes') {
+            if(mutation.attributeName === 'selected_user') {
+                update_inherited_user()
+            }
+        }
+    }
+})
+
+inherited_user_observer.observe(document.getElementById('adv_inherited_current_user'), {attributes: true})
 
 // change owner button:
 $('#adv_owner_change_button').click(function() {
