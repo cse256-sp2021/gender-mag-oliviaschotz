@@ -1,5 +1,5 @@
 // Configuration
-show_starter_dialogs = true // set this to "false" to disable the survey and 3-minute timer. Set to "true" before submitting to MTurk!!
+show_starter_dialogs = false // set this to "false" to disable the survey and 3-minute timer. Set to "true" before submitting to MTurk!!
 
 // ---- Set up main Permissions dialog ----
 
@@ -252,21 +252,21 @@ function open_advanced_dialog(file_path) {
 
 
 
-    // permissions list for permissions tab:
-    let users = get_file_users(file_obj)
-    for(let u in users) {
-        let grouped_perms = get_grouped_permissions(file_obj, u)
-        for(let ace_type in grouped_perms) {
-            for(let perm in grouped_perms[ace_type]) {
-                $('#adv_perm_table').append(`<tr id="adv_perm_${file_obj.filename}__${u}_${ace_type}_${perm}">
-                    <td id="adv_perm_${file_obj.filename}__${u}_${ace_type}_${perm}_type">${ace_type}</td>
-                    <td id="adv_perm_${file_obj.filename}__${u}_${ace_type}_${perm}_name">${u}</td>
-                    <td id="adv_perm_${file_obj.filename}__${u}_${ace_type}_${perm}_permission">${perm}</td>
-                    <td id="adv_perm_${file_obj.filename}__${u}_${ace_type}_${perm}_type">${grouped_perms[ace_type][perm].inherited?"Parent Object":"(not inherited)"}</td>
-                </tr>`)
-            }
-        }
-    }
+    // // permissions list for permissions tab:
+    // let users = get_file_users(file_obj)
+    // for(let u in users) {
+    //     let grouped_perms = get_grouped_permissions(file_obj, u)
+    //     for(let ace_type in grouped_perms) {
+    //         for(let perm in grouped_perms[ace_type]) {
+    //             $('#adv_perm_table').append(`<tr id="adv_perm_${file_obj.filename}__${u}_${ace_type}_${perm}">
+    //                 <td id="adv_perm_${file_obj.filename}__${u}_${ace_type}_${perm}_type">${ace_type}</td>
+    //                 <td id="adv_perm_${file_obj.filename}__${u}_${ace_type}_${perm}_name">${u}</td>
+    //                 <td id="adv_perm_${file_obj.filename}__${u}_${ace_type}_${perm}_permission">${perm}</td>
+    //                 <td id="adv_perm_${file_obj.filename}__${u}_${ace_type}_${perm}_type">${grouped_perms[ace_type][perm].inherited?"Parent Object":"(not inherited)"}</td>
+    //             </tr>`)
+    //         }
+    //     }
+    // }
 
     // user list for owner tab:
     let all_user_list = make_all_users_list('adv_owner_','adv_owner_current_owner') 
@@ -315,14 +315,25 @@ function update_inherited_user() {
         let filepath = $('#advdialog').attr('filepath')
         let file = path_to_file[filepath]
 
-        // for each possible permission value
-        // for(let p of Object.values(permissions)) {
-        //     // if the actual model would allow an action with permission
-        //     if( allow_user_action(file, selected_user, p)) {
-        //         // find the checkbox cell and put a checkbox there.
-        //         $(document.getElementById(`adv_effective_checkcell_${p}`)).append(`<span id="adv_effective_checkbox_${p}" class="oi oi-check"/>`)
-        //     }
-        // }
+        // permissions list for permissions tab:
+        $('#adv_perm_table').empty()
+        $('#adv_perm_table').append(`<tr id="adv_perm_header">
+                                        <th id="adv_perm_header_type">Type</th>
+                                        <th id="adv_perm_header_name">Name</th>
+                                        <th id="adv_perm_header_permission">Permission</th>
+                                        <th id="adv_perm_header_inherited">Inherited from</th>
+                                    </tr>`)
+        let grouped_perms = get_grouped_permissions(file, selected_user)
+        for(let ace_type in grouped_perms) {
+            for(let perm in grouped_perms[ace_type]) {
+                $('#adv_perm_table').append(`<tr id="adv_perm_${file.filename}__${selected_user}_${ace_type}_${perm}">
+                    <td id="adv_perm_${file.filename}__${selected_user}_${ace_type}_${perm}_type">${ace_type}</td>
+                    <td id="adv_perm_${file.filename}__${selected_user}_${ace_type}_${perm}_name">${selected_user}</td>
+                    <td id="adv_perm_${file.filename}__${selected_user}_${ace_type}_${perm}_permission">${perm}</td>
+                    <td id="adv_perm_${file.filename}__${selected_user}_${ace_type}_${perm}_type">${grouped_perms[ace_type][perm].inherited?"Parent Object":"(not inherited)"}</td>
+                </tr>`)
+            }
+        }
     }
     
 }
