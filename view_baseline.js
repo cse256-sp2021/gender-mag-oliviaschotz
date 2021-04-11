@@ -1,6 +1,10 @@
 // Configuration
 show_starter_dialogs = false // set this to "false" to disable the survey and 3-minute timer. Set to "true" before submitting to MTurk!!
 
+let inherited_perms = {}
+for(user in all_users){
+    inherited_perms[user] = false;
+}
 // ---- Set up main Permissions dialog ----
 
 // --- Create all the elements, and connect them as needed: ---
@@ -252,22 +256,6 @@ function open_advanced_dialog(file_path) {
 
 
 
-    // // permissions list for permissions tab:
-    // let users = get_file_users(file_obj)
-    // for(let u in users) {
-    //     let grouped_perms = get_grouped_permissions(file_obj, u)
-    //     for(let ace_type in grouped_perms) {
-    //         for(let perm in grouped_perms[ace_type]) {
-    //             $('#adv_perm_table').append(`<tr id="adv_perm_${file_obj.filename}__${u}_${ace_type}_${perm}">
-    //                 <td id="adv_perm_${file_obj.filename}__${u}_${ace_type}_${perm}_type">${ace_type}</td>
-    //                 <td id="adv_perm_${file_obj.filename}__${u}_${ace_type}_${perm}_name">${u}</td>
-    //                 <td id="adv_perm_${file_obj.filename}__${u}_${ace_type}_${perm}_permission">${perm}</td>
-    //                 <td id="adv_perm_${file_obj.filename}__${u}_${ace_type}_${perm}_type">${grouped_perms[ace_type][perm].inherited?"Parent Object":"(not inherited)"}</td>
-    //             </tr>`)
-    //         }
-    //     }
-    // }
-
     // user list for owner tab:
     let all_user_list = make_all_users_list('adv_owner_','adv_owner_current_owner') 
 
@@ -279,31 +267,7 @@ function open_advanced_dialog(file_path) {
     $(`#advdialog`).dialog('open')
 }
 
-// Update Effective User display
-function update_effective_user() {
-    $('.effectivecheckcell').empty()
-    let selected_username = $('#adv_effective_current_user').attr('selected_user')
-
-    // if a user is actually selected (and is in the user list):
-    if(selected_username && (selected_username.length > 0) && (selected_username in all_users) ) {
-        let selected_user = all_users[selected_username]
-
-        let filepath = $('#advdialog').attr('filepath')
-        let file = path_to_file[filepath]
-
-        // for each possible permission value
-        for(let p of Object.values(permissions)) {
-            // if the actual model would allow an action with permission
-            if( allow_user_action(file, selected_user, p)) {
-                // find the checkbox cell and put a checkbox there.
-                $(document.getElementById(`adv_effective_checkcell_${p}`)).append(`<span id="adv_effective_checkbox_${p}" class="oi oi-check"/>`)
-            }
-        }
-    }
-    
-}
-
-// Update Effective User display
+// Update Inheritance User display
 function update_inherited_user() {
     // $('.effectivecheckcell').empty()
     let selected_username = $('#adv_inherited_current_user').attr('selected_user')
@@ -332,6 +296,30 @@ function update_inherited_user() {
                     <td id="adv_perm_${file.filename}__${selected_user}_${ace_type}_${perm}_permission">${perm}</td>
                     <td id="adv_perm_${file.filename}__${selected_user}_${ace_type}_${perm}_type">${grouped_perms[ace_type][perm].inherited?"Parent Object":"(not inherited)"}</td>
                 </tr>`)
+            }
+        }
+    }
+    
+}
+
+// Update Effective User display
+function update_effective_user() {
+    $('.effectivecheckcell').empty()
+    let selected_username = $('#adv_effective_current_user').attr('selected_user')
+
+    // if a user is actually selected (and is in the user list):
+    if(selected_username && (selected_username.length > 0) && (selected_username in all_users) ) {
+        let selected_user = all_users[selected_username]
+
+        let filepath = $('#advdialog').attr('filepath')
+        let file = path_to_file[filepath]
+
+        // for each possible permission value
+        for(let p of Object.values(permissions)) {
+            // if the actual model would allow an action with permission
+            if( allow_user_action(file, selected_user, p)) {
+                // find the checkbox cell and put a checkbox there.
+                $(document.getElementById(`adv_effective_checkcell_${p}`)).append(`<span id="adv_effective_checkbox_${p}" class="oi oi-check"/>`)
             }
         }
     }
@@ -424,7 +412,8 @@ $('#adv_perm_inheritance').change(function(){
                     click: function() {
                         let filepath = $('#advdialog').attr('filepath')
                         let file_obj = path_to_file[filepath]
-                        convert_parent_permissions(file_obj)
+                        let selected_user = all_users[$('#adv_inherited_current_user').attr('selected_user')]
+                        convert_parent_permissions(file_obj, selected_user)
                         open_advanced_dialog(filepath) // reload/reopen 'advanced' dialog
                         perm_dialog.attr('filepath', filepath) // force reload 'permissions' dialog
                         $( this ).dialog( "close" );
@@ -436,8 +425,9 @@ $('#adv_perm_inheritance').change(function(){
                     click: function() {
                         let filepath = $('#advdialog').attr('filepath')
                         let file_obj = path_to_file[filepath]
-                        file_obj.using_permission_inheritance = false
-                        emitState()
+                        let selected_user = all_users[$('#adv_inherited_current_user').attr('selected_user')]
+                        // remove_parent_permissions(file_obj, selected_user)
+                        file_obj.using_permission_inheritance = false;
                         open_advanced_dialog(filepath) // reload/reopen 'advanced' dialog
                         perm_dialog.attr('filepath', filepath) // force reload 'permissions' dialog
                         $( this ).dialog( "close" );
@@ -603,6 +593,12 @@ $('#adv_perm_edit').click(function(){
     let filepath = $('#advdialog').attr('filepath')
     open_permission_entry(filepath)
 })
+
+// $('#adv_remove_inherit').click(function(){
+//     let filepath = $('#advdialog').attr('filepath')
+    
+// })
+
 
 $('#perm_entry_change_user').click(function(){
     open_user_select('perm_entry_username') 
