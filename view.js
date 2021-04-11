@@ -32,7 +32,7 @@ $("#sidepanel").append(info_panel);
 info_panel.append(`<h3>Help</h3>`)
 info_panel.append(`<p><br>Click the lock icon to open the list of permissions for the corresponding file/folder`);
 info_panel.append(`<br>Click "Advanced" to see the inherited permissions`);
-info_panel.append(`<br><br>If a user cannot be deleted due to inherited permissions, delete the user from the folder a level up.</p>`);
+info_panel.append(`<br><br>To restrict permissions of a user who is part of a group that has been added, add that user to the file and deny the permissions you would like to restrict.</p>`);
 
 
 
