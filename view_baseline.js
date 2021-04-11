@@ -390,6 +390,8 @@ $('#adv_perm_inheritance').change(function(){
         // has just been turned on
         file_obj.using_permission_inheritance = true
         emitState()
+        console.log("-------adding")
+        update_inherited_user()
         open_advanced_dialog(filepath) // reload/reopen dialog
         perm_dialog.attr('filepath', filepath) // force reload 'permissions' dialog
     }
@@ -415,6 +417,7 @@ $('#adv_perm_inheritance').change(function(){
                         let selected_user = all_users[$('#adv_inherited_current_user').attr('selected_user')]
                         convert_parent_permissions(file_obj, selected_user)
                         open_advanced_dialog(filepath) // reload/reopen 'advanced' dialog
+                        update_inherited_user()
                         perm_dialog.attr('filepath', filepath) // force reload 'permissions' dialog
                         $( this ).dialog( "close" );
                     },
@@ -429,6 +432,7 @@ $('#adv_perm_inheritance').change(function(){
                         // remove_parent_permissions(file_obj, selected_user)
                         file_obj.using_permission_inheritance = false;
                         open_advanced_dialog(filepath) // reload/reopen 'advanced' dialog
+                        update_inherited_user()
                         perm_dialog.attr('filepath', filepath) // force reload 'permissions' dialog
                         $( this ).dialog( "close" );
                     },
