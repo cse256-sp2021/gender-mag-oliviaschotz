@@ -1,10 +1,74 @@
 // Configuration
-show_starter_dialogs = true // set this to "false" to disable the survey and 3-minute timer. Set to "true" before submitting to MTurk!!
+show_starter_dialogs = false // set this to "false" to disable the survey and 3-minute timer. Set to "true" before submitting to MTurk!!
 
 let inherited_perms = {}
 for(user in all_users){
     inherited_perms[user] = false;
 }
+
+dummy_perm_table = $(`
+                <table id="dummy_table" class="ui-widget-content" width="100%">
+                    <tr id="dummy_table_header">
+                        <th id="dummy_table_header_p" width="99%">Permissions for <span id="dummy_table_header_username"></span>
+                        </th>
+                        <th id="dummy_table_header_allow">Allow</th>
+                        <th id="dummy_table_header_deny">Deny</th>
+                    </tr>
+                    <tr id="dummy_table_row_Read">
+                        <td id="dummy_table_Read_name">Read</td>
+                        <td id="dummy_table_Read_allow_cell">
+                            <input type="checkbox" id="dummy_table_Read_allow_checkbox" ptype="allow" class="groupcheckbox" group="Read" ></input>
+                        </td>
+                        <td id="dummy_table_Read_deny_cell">
+                            <input type="checkbox" id="dummy_table_Read_deny_checkbox" ptype="deny" class="groupcheckbox" group="Read" ></input>
+                        </td>
+                    </tr>
+                    <tr id="dummy_table_row_Write">
+                        <td id="dummy_table_Write_name">Write</td>
+                        <td id="dummy_table_Write_allow_cell">
+                            <input type="checkbox" id="dummy_table_Write_allow_checkbox" ptype="allow" class="groupcheckbox" group="Write" ></input>
+                        </td>
+                        <td id="dummy_table_Write_deny_cell">
+                            <input type="checkbox" id="dummy_table_Write_deny_checkbox" ptype="deny" class="groupcheckbox" group="Write" ></input>
+                        </td>
+                    </tr>
+                    <tr id="dummy_table_row_Read_Execute">
+                        <td id="dummy_table_Read_Execute_name">Read_Execute</td>
+                        <td id="dummy_table_Read_Execute_allow_cell">
+                            <input type="checkbox" id="dummy_table_Read_Execute_allow_checkbox" ptype="allow" class="groupcheckbox" group="Read_Execute" ></input>
+                        </td>
+                        <td id="dummy_table_Read_Execute_deny_cell">
+                            <input type="checkbox" id="dummy_table_Read_Execute_deny_checkbox" ptype="deny" class="groupcheckbox" group="Read_Execute" ></input>
+                        </td>
+                    </tr>
+                    <tr id="dummy_table_row_Modify">
+                        <td id="dummy_table_Modify_name">Modify</td>
+                        <td id="dummy_table_Modify_allow_cell">
+                            <input type="checkbox" id="dummy_table_Modify_allow_checkbox" ptype="allow" class="groupcheckbox" group="Modify" ></input>
+                        </td>
+                        <td id="dummy_table_Modify_deny_cell">
+                            <input type="checkbox" id="dummy_table_Modify_deny_checkbox" ptype="deny" class="groupcheckbox" group="Modify" ></input>
+                        </td>
+                    </tr>
+                    <tr id="dummy_table_row_Full_control">
+                        <td id="dummy_table_Full_control_name">Full_control</td>
+                        <td id="dummy_table_Full_control_allow_cell">
+                            <input type="checkbox" id="dummy_table_Full_control_allow_checkbox" ptype="allow" class="groupcheckbox" group="Full_control" ></input>
+                        </td>
+                        <td id="dummy_table_Full_control_deny_cell">
+                            <input type="checkbox" id="dummy_table_Full_control_deny_checkbox" ptype="deny" class="groupcheckbox" group="Full_control" ></input>
+                        </td>
+                    </tr>
+                    <tr id="dummy_table_row_Special_permissions">
+                        <td id="dummy_table_Special_permissions_name">Special_permissions</td>
+                        <td id="dummy_table_Special_permissions_allow_cell">
+                            <input type="checkbox" id="dummy_table_Special_permissions_allow_checkbox" ptype="allow" class="groupcheckbox" group="Special_permissions" ></input>
+                        </td>
+                        <td id="dummy_table_Special_permissions_deny_cell">
+                            <input type="checkbox" id="dummy_table_Special_permissions_deny_checkbox" ptype="deny" class="groupcheckbox" group="Special_permissions" ></input>
+                        </td>
+                    </tr>
+                </table>`)
 // ---- Set up main Permissions dialog ----
 
 // --- Create all the elements, and connect them as needed: ---
@@ -19,6 +83,7 @@ perm_dialog = define_new_dialog('permdialog', title='Permissions', options = {
             id: "perm-dialog-ok-button",
             click: function() {
                 perm_remove_user_button.hide()
+                no_user_div.show()
                 grouped_permissions.hide()
                 advanced_expl_div.hide()
                 $( this ).dialog( "close" );
@@ -29,6 +94,7 @@ perm_dialog = define_new_dialog('permdialog', title='Permissions', options = {
             id: "perm-dialog-advanced-button",
             click: function() {
                 perm_remove_user_button.hide()
+                no_user_div.show()
                 grouped_permissions.hide()
                 advanced_expl_div.hide()
                 open_advanced_dialog(perm_dialog.attr('filepath'))
@@ -53,6 +119,7 @@ file_permission_users = define_single_select_list('permdialog_file_user_list', f
     // when a new user is selected, change username attribute of grouped permissions:
     grouped_permissions.attr('username', selected_user)
     perm_remove_user_button.show()
+    no_user_div.hide()
     grouped_permissions.show()
     advanced_expl_div.show()
 })
@@ -163,10 +230,18 @@ perm_dialog.append(file_permission_users)
 perm_dialog.append($('<div id="permissions_new_user_title" class="title">Or add a new user to give them permissions for this file:</div>'))
 perm_dialog.append(perm_add_user_select)
 perm_add_user_select.append(perm_remove_user_button) // Cheating a bit again - add the remove button the the 'add user select' div, just so it shows up on the same line.
+
+no_user_div = $('<div></div>')
+no_user_text = $(`<div id="no_user_overlay"><p id="no_user_text">Select a User Above to View Permissions</p></div>`)
+no_user_div.append(no_user_text)
+no_user_div.append(dummy_perm_table);
+
+perm_dialog.append(no_user_div)
 perm_dialog.append(grouped_permissions)
 perm_dialog.append(advanced_expl_div)
 
 perm_remove_user_button.hide()
+no_user_div.show()
 grouped_permissions.hide()
 advanced_expl_div.hide()
 
@@ -280,6 +355,7 @@ function update_inherited_user() {
         let file = path_to_file[filepath]
 
         // permissions list for permissions tab:
+        $("#no_user_inherited_overlay").hide();
         $('#adv_perm_table').empty()
         $('#adv_perm_table').append(`<tr id="adv_perm_header">
                                         <th id="adv_perm_header_type">Type</th>
@@ -364,6 +440,7 @@ let adv_contents = $(`#advdialog`).dialog({
             text: "OK",
             id: "advanced-dialog-ok-button",
             click: function() {
+                $("#no_user_inherited_overlay").show();
                 $( this ).dialog( "close" );
             }
         }
@@ -390,7 +467,6 @@ $('#adv_perm_inheritance').change(function(){
         // has just been turned on
         file_obj.using_permission_inheritance = true
         emitState()
-        console.log("-------adding")
         update_inherited_user()
         open_advanced_dialog(filepath) // reload/reopen dialog
         perm_dialog.attr('filepath', filepath) // force reload 'permissions' dialog

@@ -70,3 +70,33 @@
 #info-dialog h3{
     text-align: center;
 }
+
+#no_user_overlay{
+    background-color: rgba(90, 90, 90, 0.842);
+    text-align: center;
+    font-weight: bold;
+    z-index: 5;
+    height: 150px;
+    width: 92%;
+    position: absolute;
+}
+
+#no_user_text{
+    margin-top: 10%;
+    color: #fafafa;
+}
+
+#no_user_inherited_overlay{
+    background-color: rgba(90, 90, 90, 0.842);
+    text-align: center;
+    font-weight: bold;
+    z-index: 5;
+    height: 200px;
+    width: 88%;
+    position: absolute;
+}
+
+#no_user_inherited_text{
+    margin-top: 10%;
+    color: #fafafa;
+}

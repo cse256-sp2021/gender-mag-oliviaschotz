@@ -108,7 +108,7 @@
                     <div id="advtabs">
                         <ul id="advtabs_titles">
                             <li id="advtab_title_permissions"><a href="#adv_permissions_tab"
-                                    id="adv_permissions_tab_elem">Permissions</a></li>
+                                    id="adv_permissions_tab_elem">Inherited Permissions</a></li>
                             <li id="advtab_title_owner"><a href="#adv_owner_tab" id="adv_owner_tab_elem">Owner</a></li>
                             <li id="advtab_title_effective"><a href="#adv_effective_tab"
                                     id="adv_effective_tab_elem">Effective Permissions</a></li>
@@ -116,9 +116,18 @@
                         <div id="adv_permissions_tab">
                             <div id="adv_perm_object_name" class="section">Object Name: <span
                                     id="adv_perm_filepath"></span></div>
+                                    <div id="adv_inherited_current_user_line" class="section">
+                                        <span id="adv_inherited_current_user" class="ui-widget-content"
+                                            style="width: 80%;display: inline-block;">&nbsp</span>
+                                            <button id="adv_permissions_user_select"
+                                            class="ui-button ui-widget ui-corner-all">Select...</button>
+                                    </div>
                             <div id="adv_perm_entries_text">Permission entries:</div>
-                            <div id="adv_perm_table_container" style="height:100px;overflow-y:scroll"
+                            <div id="adv_perm_table_container" style="height:200px;overflow-y:scroll"
                                 class="ui-widget-content section">
+                                <div id="no_user_inherited_overlay">
+                                    <p id="no_user_inherited_text">Select a User Above to View Permissions</p>
+                                </div>
                                 <table id="adv_perm_table" width="100%">
                                     <tr id="adv_perm_header">
                                         <th id="adv_perm_header_type">Type</th>
